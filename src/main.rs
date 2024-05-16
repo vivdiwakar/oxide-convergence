@@ -3,29 +3,11 @@ extern crate getopts;
 use std::env;
 use getopts::Options;
 
+mod simulator;
+
 fn usage(program: &str, opts: Options) {
     let message: String = format!("Usage: {} -i input_file.csv -o output_file.csv", program);
     println!("{}", opts.usage(&message));
-}
-
-fn load_historical_data(in_file: &str, out_file: &str) {
-    println!("Loading historical price data from '{}' ...", in_file);
-
-    let days_to_sim: u32 = 1450;
-
-    run_simulation(days_to_sim, &out_file);
-    return;
-}
-
-fn run_simulation(days: u32, out_file: &str) {
-    println!("Running simulations for {} days ...", days);
-
-    compile_results(&out_file);
-    return;
-}
-
-fn compile_results(out_file: &str) {
-    println!("Simulation complete, results in {}.", &out_file);
 }
 
 fn main() {
@@ -62,6 +44,12 @@ fn main() {
         return;
     };
 
-    load_historical_data(&in_file, &out_file);
+    let days_to_sim: u32 = 1450;
+    // load_historical_data
+    let sim_results: [f64; 36] = simulator::run_monte_carlo_simulation(days_to_sim);
+    // compile_results
+
+
+    println!("Simulation complete, results in {}.", &out_file);
     return;
 }
