@@ -80,7 +80,7 @@ fn main() {
 
     // Do the processing
     let days_to_sim: i64 = date_time::days_forward(end_date);
-    ingester::ingest_historical_data(in_file, date_regex, date_column, price_column);
+    ingester::ingest_historical_data(in_file, &date_regex, date_column, price_column);
     let _sim_results: [f64; 36] = simulator::run_monte_carlo_simulation(days_to_sim);
     // compile_results
 
