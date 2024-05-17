@@ -1,7 +1,38 @@
+extern crate csv;
 extern crate regex;
 
-use regex::Regex;
+use crate::date_time;
 
-pub fn ingest_historical_data(in_file: String, date_regex: String, date_column: String, price_column: String) {
-    let re: Regex = Regex::new(date_regex.as_str()).unwrap();
+use std::fs::File;
+use chrono::NaiveDate;
+use csv::{Reader, ReaderBuilder, StringRecord};
+use regex::{Regex, Captures};
+
+pub fn ingest_historical_data(in_file: String, date_regex: &str, date_column: String, price_column: String) {
+    let date_col: usize = date_column.parse().unwrap();
+    let price_col: usize = price_column.parse().unwrap();
+
+    let file: File = match File::open(in_file) {
+        Err(error) => panic!("couldn't open {}", error),
+        Ok(file) => file
+    };
+
+    let mut rdr: Reader<_> = ReaderBuilder::new().from_reader(file);
+    for result in rdr.records() {
+        match result {
+            Err(_error) => (),
+            Ok(record) => process_record(record, date_regex, date_col, price_col)
+        };
+    }
+}
+
+fn process_record(record: StringRecord, date_regex: &str, date_col: usize, price_col: usize) {
+    let re: Regex = Regex::new(date_regex).unwrap();
+    let rec_date_str: &str = record.get(date_col).unwrap();
+    if re.is_match(rec_date_str) {
+        let date_caps: Captures = re.captures(rec_date_str).unwrap();
+        let rec_date: NaiveDate = date_time::get_date_from_strings(&date_caps[1], &date_caps[2], &date_caps[3]);
+        let rec_price: f64  = record.get(price_col).unwrap().parse().unwrap();
+        println!("Date: {}, Price: {}", rec_date, rec_price);
+    }
 }
