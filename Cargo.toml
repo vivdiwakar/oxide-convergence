@@ -6,3 +6,4 @@ edition = "2021"
 [dependencies]
 chrono = "0.4.38"
 getopts = "0.2.21"
+regex = "1.10.4"
