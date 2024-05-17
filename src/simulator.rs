@@ -1,5 +1,5 @@
 
-pub fn run_monte_carlo_simulation(days: u32) -> [f64; 36] {
+pub fn run_monte_carlo_simulation(days: i64) -> [f64; 36] {
     println!("Running simulations for {} days ...", days);
 
     let results: [f64; 36]  = [
