@@ -9,7 +9,7 @@ use chrono::NaiveDate;
 use csv::{Reader, ReaderBuilder};
 use regex::{Regex, Captures};
 
-pub fn ingest_historical_data(in_file: String, date_regex: &str, date_column: String, price_column: String) -> Vec<(NaiveDate, f64)> {
+pub fn ingest_historical_data(in_file: String, date_regex: &str, date_column: &String, price_column: &String) -> Vec<(NaiveDate, f64)> {
     let date_col: usize = date_column.parse().unwrap();
     let price_col: usize = price_column.parse().unwrap();
     let mut regex_match: bool = false;
