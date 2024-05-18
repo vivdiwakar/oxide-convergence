@@ -79,15 +79,9 @@ fn main() {
         return;
     };
 
-    // Do the processing
-    let days_to_sim: i64 = date_time::days_forward(end_date);
-    let hist_prices: Vec<(NaiveDate, f64)> = ingester::ingest_historical_data(in_file, &date_regex, date_column, price_column);
-    let _sim_results: [f64; 36] = simulator::run_monte_carlo_simulation(days_to_sim);
-    // compile_results
-
-    for res in hist_prices.iter() {
-        println!("[{}, {}]", res.0, res.1);
-    }
+    let days_to_sim: i64 = date_time::days_forward(&end_date);
+    let hist_prices: Vec<(NaiveDate, f64)> = ingester::ingest_historical_data(in_file, &date_regex, &date_column, &price_column);
+    simulator::run_monte_carlo_simulation(&end_date, days_to_sim, hist_prices);
 
     println!("Simulation complete, results in {}.", &out_file);
     return;
