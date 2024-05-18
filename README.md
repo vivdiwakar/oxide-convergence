@@ -11,7 +11,7 @@ cargo build --release
 ## Running
 
 ```sh
-target/release/oxide-convergence -i IN_FILE.csv -o OUT_FILE -e END_DATE -f "DATE_FORMAT"
+target/release/oxide-convergence -i IN_FILE.csv -o OUT_FILE -e END_DATE -f "DATE_REGEX" -d DATE_COLUMN -p PRICE_COLUMN
 ```
 
 Options:
@@ -26,5 +26,5 @@ Options:
 Example:
 
 ```sh
-oxide-convergence -i hist_data.csv -o /tmp/mc_res.csv -e 2028-03-31 -f 'YYYY-MM-DD 00:00:00 UTC' -d0 -p1
+oxide-convergence -i hist_data.csv -o /tmp/mc_res.csv -e 2028-03-31 -f "^\d{4}-\d{2}-\d{2}.*$" -d0 -p1
 ```
