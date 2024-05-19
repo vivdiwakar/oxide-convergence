@@ -1,7 +1,8 @@
 use chrono::NaiveDate;
 use statrs::statistics::Statistics;
 
-pub fn run_monte_carlo_simulation(end_date: &String, simulations: i64, hist_data: Vec<(NaiveDate, f64)>) {
+pub fn run_monte_carlo_simulation(end_date: &String, simulations: i64, hist_data: Vec<(NaiveDate, f64)>, sims_per_day: &String) {
+    let num_sims: &i32 = &sims_per_day.parse::<i32>().unwrap();
     let mut periodic_daily_returns: Vec<f64> = Vec::new();
     for res in 1..hist_data.len() {
         periodic_daily_returns.push((hist_data[res].1 / hist_data[res - 1].1).ln());
@@ -22,7 +23,7 @@ pub fn run_monte_carlo_simulation(end_date: &String, simulations: i64, hist_data
     println!("    Drift: {}", drift);
     print!("\n");
 
-    println!("Starting price simulation to {} ({} days) ...", end_date, simulations);
+    println!("Starting price simulation to {} ({} days, {} simulations per day) ...", end_date, simulations, &num_sims);
     println!("    Latest price date: {}", latest_date);
     println!("    Latest price (USD): {}", latest_price);
 }

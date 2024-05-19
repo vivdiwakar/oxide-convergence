@@ -26,6 +26,7 @@ fn main() {
     opts.optopt("f", "date_format", "Date regular expression, with captures, used for interpreting and parsing dates.", "\"^\\d{4}-\\d{2}-\\d{2}.*$\"");
     opts.optopt("d", "date_column_index", "Zero-indexed column number containing dates.", "0");
     opts.optopt("p", "price_column_index", "Zero-indexed column number containing prices.", "1");
+    opts.optopt("s", "sims_per_day", "Number of simulations to run per day.", "5000");
     opts.optflag("h", "help", "Print this help menu.");
     let matches: Matches = match opts.parse(&args[1..]) {
         Ok(m) => { m }
@@ -79,24 +80,17 @@ fn main() {
         return;
     };
 
-    // let price_column: Option<String> = grab_cli_options(&matches, opts, "p", program);
+    let sims_per_day: String = if matches.opt_str("s").is_some() {
+        matches.opt_str("s").clone().unwrap()
+    } else {
+        usage(&program, opts);
+        return;
+    };
 
     let days_to_sim: i64 = date_time::days_forward(&end_date);
     let hist_prices: Vec<(NaiveDate, f64)> = ingester::ingest_historical_data(in_file, &date_regex, &date_column, &price_column);
-    simulator::run_monte_carlo_simulation(&end_date, days_to_sim, hist_prices);
+    simulator::run_monte_carlo_simulation(&end_date, days_to_sim, hist_prices, &sims_per_day);
 
     println!("Simulation complete, results in {}.", &out_file);
     return;
 }
-
-// fn grab_cli_options(matches: &Matches, options: Options, flag: &str, prog_name: &str) -> Option<String> {
-
-//     let price_column: String = if matches.opt_str(flag).is_some() {
-//         matches.opt_str(flag).clone().unwrap()
-//     } else {
-//         usage(&prog_name, options);
-//         return;
-//     };
-
-//     return Some(price_column);
-// }
