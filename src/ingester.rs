@@ -47,5 +47,6 @@ pub fn ingest_historical_data(in_file: String, date_regex: &str, date_column: &S
         process::exit(1);
     }
 
+    prices.sort_by_key(|rec| rec.0);
     return prices;
 }
