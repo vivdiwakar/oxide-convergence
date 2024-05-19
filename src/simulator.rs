@@ -11,6 +11,8 @@ pub fn run_monte_carlo_simulation(end_date: &String, simulations: i64, hist_data
     let var_p_daily_return: f64 = Statistics::population_variance(&periodic_daily_returns);
     let stdev_p_daily_return: f64 = Statistics::population_std_dev(&periodic_daily_returns);
     let drift: f64 = &mean_daily_return - (&var_p_daily_return / 2.0) as f64;
+    let latest_date: NaiveDate = hist_data[hist_data.len()-1].0;
+    let latest_price: f64 = hist_data[hist_data.len()-1].1;
 
     println!("\nStatistics calculated for historical data ...");
     println!("    Total records ingested: {}", hist_data.len() as i32);
@@ -21,4 +23,6 @@ pub fn run_monte_carlo_simulation(end_date: &String, simulations: i64, hist_data
     print!("\n");
 
     println!("Starting price simulation to {} ({} days) ...", end_date, simulations);
+    println!("    Latest price date: {}", latest_date);
+    println!("    Latest price (USD): {}", latest_price);
 }
