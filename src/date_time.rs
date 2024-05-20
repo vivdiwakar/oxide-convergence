@@ -3,7 +3,6 @@ extern crate chrono;
 use chrono::prelude::NaiveDate;
 
 pub fn days_to_simulate(end_date: &String, last_price_date: NaiveDate) -> i64 {
-    println!("{}, {}", &end_date, &last_price_date);
     let end_date_naive: NaiveDate = NaiveDate::parse_from_str(&end_date, "%Y-%m-%d").unwrap();
     return (end_date_naive - last_price_date).num_days() + 1;
 }
