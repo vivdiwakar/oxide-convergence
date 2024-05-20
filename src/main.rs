@@ -87,9 +87,8 @@ fn main() {
         return;
     };
 
-    let days_to_sim: i64 = date_time::days_forward(&end_date);
     let hist_prices: Vec<(NaiveDate, f64)> = ingester::ingest_historical_data(in_file, &date_regex, &date_column, &price_column);
-    simulator::run_monte_carlo_simulation(&end_date, days_to_sim, hist_prices, &sims_per_day);
+    simulator::run_monte_carlo_simulation(&end_date, hist_prices, &sims_per_day);
 
     println!("Simulation complete, results in {}.", &out_file);
     return;
