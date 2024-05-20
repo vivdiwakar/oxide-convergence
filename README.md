@@ -11,7 +11,7 @@ cargo build --release
 ## Running
 
 ```sh
-target/release/oxide-convergence -i IN_FILE.csv -o OUT_FILE -e END_DATE -f "DATE_REGEX" -d DATE_COLUMN -p PRICE_COLUMN
+target/release/oxide-convergence -i IN_FILE.csv -o OUT_FILE -e END_DATE -f "DATE_REGEX" -d DATE_COLUMN_INDEX -p PRICE_COLUMN_INDEX -s INTEGER
 ```
 
 Options:
@@ -22,9 +22,10 @@ Options:
 - _-f_ or _--date_format_: Date format regex, with captures, used for interpreting and parsing dates
 - _-d_ or _--date_column_index: Zero-indexed column number containing dates
 - _-p_ or _--price_column_index: Zero-indexed column number containing prices
+- _-s_ or _--sims_per_day: Number of simulations to run per day
 
 Example:
 
 ```sh
-oxide-convergence -i hist_data.csv -o /tmp/mc_res.csv -e 2028-03-31 -f "^(\d{4})-(\d{2})-(\d{2}).*$" -d0 -p1
+oxide-convergence -i hist_data.csv -o /tmp/mc_res.csv -e 2028-03-31 -f "^(\d{4})-(\d{2})-(\d{2}).*$" -d0 -p1 -s 5000
 ```
