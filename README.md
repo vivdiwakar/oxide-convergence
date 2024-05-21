@@ -8,10 +8,12 @@ Monte Carlo simulator of price data written in Rust
 cargo build --release
 ```
 
+The compiled binary can be found under `./target/release/`.
+
 ## Running
 
 ```sh
-target/release/oxide-convergence -i IN_FILE.csv -o OUT_FILE -e END_DATE -f "DATE_REGEX" -d DATE_COLUMN_INDEX -p PRICE_COLUMN_INDEX -s INTEGER
+oxide-convergence -i IN_FILE.csv -o OUT_FILE -e END_DATE -f "DATE_REGEX" -d DATE_COLUMN_INDEX -p PRICE_COLUMN_INDEX -s INTEGER
 ```
 
 Options:
@@ -20,9 +22,9 @@ Options:
 - _-o_ or _--out_file_: File to output price forecast data
 - _-e_ or _--end_date_: Target price date, in YYYY-MM-DD format
 - _-f_ or _--date_format_: Date format regex, with captures, used for interpreting and parsing dates
-- _-d_ or _--date_column_index: Zero-indexed column number containing dates
-- _-p_ or _--price_column_index: Zero-indexed column number containing prices
-- _-s_ or _--sims_per_day: Number of simulations to run per day
+- _-d_ or _--date_column_index_: Zero-indexed column number containing dates
+- _-p_ or _--price_column_index_: Zero-indexed column number containing prices
+- _-s_ or _--sims_per_day_: Number of simulations to run per day
 
 Example:
 
