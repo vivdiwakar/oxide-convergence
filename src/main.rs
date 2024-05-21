@@ -93,7 +93,7 @@ fn main() {
     let target_date: NaiveDate = date_time::get_naive_date_from_string(&end_date);
 
     if &target_date < &latest_date {
-        println!("Target date falls within available historical data, nothing to fore; Exiting.");
+        println!("Target date falls within available historical data, nothing to forecast; exiting.");
         process::exit(2);
     }
 
