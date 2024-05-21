@@ -3,6 +3,7 @@ extern crate getopts;
 use std::env;
 use getopts::{Options, Matches};
 use chrono::NaiveDate;
+use std::process;
 
 mod date_time;
 mod ingester;
@@ -88,6 +89,14 @@ fn main() {
     };
 
     let hist_prices: Vec<(NaiveDate, f64)> = ingester::ingest_historical_data(in_file, &date_regex, &date_column, &price_column);
+    let latest_date: NaiveDate = hist_prices[hist_prices.len()-1].0;
+    let target_date: NaiveDate = date_time::get_naive_date_from_string(&end_date);
+
+    if &target_date < &latest_date {
+        println!("Target date falls within available historical data, nothing to fore; Exiting.");
+        process::exit(2);
+    }
+
     simulator::run_monte_carlo_simulation(&end_date, hist_prices, &sims_per_day);
 
     println!("\nSimulation complete, results in {}.\n", &out_file);
