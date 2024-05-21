@@ -8,10 +8,12 @@ Monte Carlo simulator of price data written in Rust
 cargo build --release
 ```
 
+The compiled binary can be found under `./target/release/`.
+
 ## Running
 
 ```sh
-target/release/oxide-convergence -i IN_FILE.csv -o OUT_FILE -e END_DATE -f "DATE_REGEX" -d DATE_COLUMN_INDEX -p PRICE_COLUMN_INDEX -s INTEGER
+oxide-convergence -i IN_FILE.csv -o OUT_FILE -e END_DATE -f "DATE_REGEX" -d DATE_COLUMN_INDEX -p PRICE_COLUMN_INDEX -s INTEGER
 ```
 
 Options:
