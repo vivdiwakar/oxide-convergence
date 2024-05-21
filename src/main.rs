@@ -99,6 +99,6 @@ fn main() {
 
     simulator::run_monte_carlo_simulation(&end_date, hist_prices, &sims_per_day);
 
-    println!("\nSimulation complete, results in {}.\n", &out_file);
+    println!("Results in {}.\n", &out_file);
     return;
 }

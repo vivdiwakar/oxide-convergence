@@ -35,7 +35,7 @@ pub fn run_monte_carlo_simulation(end_date: &String, hist_data: Vec<(NaiveDate, 
 
     let results: Vec<Vec<(NaiveDate, f64)>> = (0..num_sims.clone())
         .into_par_iter() 
-        .map(|_i| simulation_run(&days_to_sim, 1, &latest_date, &latest_price, &stdev_p_daily_return, &drift)) 
+        .map(|_| simulation_run(&days_to_sim, 1, &latest_date, &latest_price, &stdev_p_daily_return, &drift)) 
         .collect(); 
 
 
@@ -44,7 +44,7 @@ pub fn run_monte_carlo_simulation(end_date: &String, hist_data: Vec<(NaiveDate, 
         println!("{:?}", res);
     }
 
-
+    println!("\nSimulation complete! {} price pints generated in total.", num_sims.clone() as i64 * days_to_sim);
 }
 
 fn simulation_run(days_to_sim: &i64, curr_day: i64, latest_date: &NaiveDate, latest_price: &f64, stdev_p: &f64, drift: &f64) -> Vec<(NaiveDate, f64)> {
