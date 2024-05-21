@@ -4,6 +4,7 @@ use chrono::NaiveDate;
 use statrs::statistics::Statistics;
 use statrs::distribution::{ContinuousCDF, Normal};
 use rand::prelude::*;
+use rayon::prelude::*;
 
 pub fn run_monte_carlo_simulation(end_date: &String, hist_data: Vec<(NaiveDate, f64)>, sims_per_day: &String) {
     let num_sims: &i32 = &sims_per_day.parse::<i32>().unwrap();
@@ -32,8 +33,16 @@ pub fn run_monte_carlo_simulation(end_date: &String, hist_data: Vec<(NaiveDate, 
     println!("    Latest price date: {}", latest_date);
     println!("    Latest price (USD): {}", latest_price);
 
-    let results: Vec<(NaiveDate, f64)> = simulation_run(&days_to_sim, 1, &latest_date, &latest_price, &stdev_p_daily_return, &drift);
-    println!("{:?}", results);
+    let results: Vec<Vec<(NaiveDate, f64)>> = (0..num_sims.clone())
+        .into_par_iter() 
+        .map(|_i| simulation_run(&days_to_sim, 1, &latest_date, &latest_price, &stdev_p_daily_return, &drift)) 
+        .collect(); 
+
+
+
+    for res in results.iter() {
+        println!("{:?}", res);
+    }
 
 
 }
