@@ -38,14 +38,10 @@ pub fn run_monte_carlo_simulation(end_date: &String, hist_data: Vec<(NaiveDate, 
 
 fn get_price_for_next_day(last_hist_price: &f64, stdev_p: &f64, drift: &f64) {
     let mut rng: ThreadRng = rand::thread_rng();
-    let random_value: f64 = normsinv(rng.gen()) * stdev_p;
+    let normal: Normal = Normal::new(0.0, 1.0).unwrap();
+    let random_value: f64 = normal.inverse_cdf(rng.gen()) * stdev_p;
     let multiplier: f64 = (drift + &random_value).exp();
     let next_day_price: f64 = last_hist_price * multiplier;
 
-    // println!("{} -> {}", &last_hist_price, &next_day_price);
-}
-
-fn normsinv(p: f64) -> f64 {
-    let normal: Normal = Normal::new(0.0, 1.0).unwrap();
-    normal.inverse_cdf(p)
+    println!("{} -> {}", &last_hist_price, &next_day_price);
 }
