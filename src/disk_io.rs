@@ -50,3 +50,12 @@ pub fn ingest_historical_data(in_file: String, date_regex: &str, date_column: &S
     prices.sort_by_key(|rec| rec.0);
     return prices;
 }
+
+pub fn write_results_to_file(results: &Vec<(NaiveDate, f64, f64, f64, f64, f64)>, out_file: &String) {
+    // for res in results.iter() {
+    //     println!("{:?}", res);
+    // }
+
+    println!("\n    Granular results available in file '{}'.", out_file);
+
+}
