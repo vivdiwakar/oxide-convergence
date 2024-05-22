@@ -97,7 +97,14 @@ fn main() {
         process::exit(2);
     }
 
-    simulator::run_monte_carlo_simulation(&end_date, hist_prices, &sims_per_day);
+    let results: Vec<(NaiveDate, f64, f64, f64, f64, f64)> = 
+        simulator::run_monte_carlo_simulation(&end_date, hist_prices, &sims_per_day);
+
+
+    for res in results.iter() {
+        println!("{:?}", res);
+    }
+
 
     println!("Results in {}.\n", &out_file);
     return;
