@@ -1,13 +1,15 @@
 extern crate getopts;
 
+mod date_time;
+mod disk_io;
+mod simulator;
+mod oxide_stats;
+
 use std::env;
 use getopts::{Options, Matches};
 use chrono::NaiveDate;
 use std::process;
-
-mod date_time;
-mod ingester;
-mod simulator;
+use num_format::{Locale, ToFormattedString};
 
 fn usage(program: &str, opts: Options) {
     let message: String = format!("Usage: {} -i input_file.csv -o output_file.csv", program);
@@ -88,7 +90,7 @@ fn main() {
         return;
     };
 
-    let hist_prices: Vec<(NaiveDate, f64)> = ingester::ingest_historical_data(in_file, &date_regex, &date_column, &price_column);
+    let hist_prices: Vec<(NaiveDate, f64)> = disk_io::ingest_historical_data(in_file, &date_regex, &date_column, &price_column);
     let latest_date: NaiveDate = hist_prices[hist_prices.len()-1].0;
     let target_date: NaiveDate = date_time::get_naive_date_from_string(&end_date);
 
@@ -97,8 +99,27 @@ fn main() {
         process::exit(2);
     }
 
-    simulator::run_monte_carlo_simulation(&end_date, hist_prices, &sims_per_day);
+    let num_sims: &i64 = &sims_per_day.parse::<i64>().unwrap();
+    let (latest_date, latest_price, days_to_sim, mean, min, max, var_p, stdev_p, drift) = 
+        simulator::setup_historical_data(&end_date, &hist_prices);
+    let results: Vec<(NaiveDate, f64, f64, f64, f64, f64)> = 
+        simulator::run_simulation(1, &latest_date, &days_to_sim, &num_sims, &latest_price, &stdev_p, &drift);
+    let _ = disk_io::write_results_to_file(&results, &out_file);
 
-    println!("\nSimulation complete, results in {}.\n", &out_file);
-    return;
+    println!("\nStatistics calculated for historical data ...");
+    println!("    Total records ingested: {}", &hist_prices.len());
+    println!("    Average Periodic Daily Return : {}", mean);
+    println!("    Minimun Periodic Daily Return: {}", min);
+    println!("    Maximum Periodic Daily Return: {}", max);
+    println!("    Variance: {}", var_p);
+    println!("    Std Deviation: {}", stdev_p);
+    println!("    Drift: {}", drift);
+    println!("\nStarting price simulation to {} ({} days, {} simulations per day) ...", end_date, &days_to_sim, &num_sims.to_formatted_string(&Locale::en));
+    println!("    Latest price date: {}", latest_date);
+    println!("    Latest price (USD): {}", latest_price);
+    println!("    Simulation complete! {} price points generated in total", (num_sims.clone() as i64 * days_to_sim).to_formatted_string(&Locale::en));
+    println!("\nSimulation Results:");
+    println!("    Expected price on {}: {}", &end_date, &results[&results.len() - 1].1);
+    println!("\nGranular Results:");
+    println!("    Granular results available in file '{}'", &out_file);
 }
