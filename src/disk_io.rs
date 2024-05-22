@@ -4,9 +4,9 @@ extern crate regex;
 use crate::date_time;
 
 use std::fs::File;
-use std::process;
+use std::{error::Error, process};
 use chrono::NaiveDate;
-use csv::{Reader, ReaderBuilder};
+use csv::{Reader, ReaderBuilder, Writer};
 use regex::{Regex, Captures};
 
 pub fn ingest_historical_data(in_file: String, date_regex: &str, date_column: &String, price_column: &String) -> Vec<(NaiveDate, f64)> {
@@ -51,11 +51,30 @@ pub fn ingest_historical_data(in_file: String, date_regex: &str, date_column: &S
     return prices;
 }
 
-pub fn write_results_to_file(results: &Vec<(NaiveDate, f64, f64, f64, f64, f64)>, out_file: &String) {
-    // for res in results.iter() {
-    //     println!("{:?}", res);
-    // }
+pub fn write_results_to_file(results: &Vec<(NaiveDate, f64, f64, f64, f64, f64)>, out_file: &String) 
+    -> Result<(), Box<dyn Error>>
+{
 
-    println!("\n    Granular results available in file '{}'.", out_file);
+    let writer_result = Writer::from_path(out_file);
+    let mut wtr: Writer<File> = match writer_result {
+        Ok(writer) => writer,
+        Err(e) => {
+            eprintln!("Could not open CSV file for writing: {}", e);
+            return Err(Box::new(e));
+        }
+    };
 
+    wtr.write_record(&["date", "mean", "min", "max", "stdev_p", "var_p"])?;
+    for res in results.iter() {
+        let date: String = res.0.to_string();
+        let mean: String = res.1.to_string();
+        let min: String = res.2.to_string();
+        let max: String = res.3.to_string();
+        let stdev_p: String = res.4.to_string();
+        let var_p : String = res.5.to_string();
+        wtr.write_record(&[&date, &mean, &min, &max, &stdev_p, &var_p])?;
+    }
+    wtr.flush()?;
+
+    Ok(())
 }

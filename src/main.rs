@@ -104,6 +104,7 @@ fn main() {
         simulator::setup_historical_data(&end_date, &hist_prices);
     let results: Vec<(NaiveDate, f64, f64, f64, f64, f64)> = 
         simulator::run_simulation(1, &latest_date, &days_to_sim, &num_sims, &latest_price, &stdev_p, &drift);
+    let _ = disk_io::write_results_to_file(&results, &out_file);
 
     println!("\nStatistics calculated for historical data ...");
     println!("    Total records ingested: {}", &hist_prices.len());
@@ -113,13 +114,12 @@ fn main() {
     println!("    Variance: {}", var_p);
     println!("    Std Deviation: {}", stdev_p);
     println!("    Drift: {}", drift);
-    println!("\nStarting price simulation to {} ({} days, {} simulations per day) ...", end_date, &days_to_sim, &num_sims);
+    println!("\nStarting price simulation to {} ({} days, {} simulations per day) ...", end_date, &days_to_sim, &num_sims.to_formatted_string(&Locale::en));
     println!("    Latest price date: {}", latest_date);
     println!("    Latest price (USD): {}", latest_price);
     println!("    Simulation complete! {} price points generated in total", (num_sims.clone() as i64 * days_to_sim).to_formatted_string(&Locale::en));
     println!("\nSimulation Results:");
     println!("    Expected price on {}: {}", &end_date, &results[&results.len() - 1].1);
-    println!("    Confidence: {}", 1.0);
-
-    // disk_io::write_results_to_file(&results, &out_file);
+    println!("\nGranular Results:");
+    println!("    Granular results available in file '{}'", &out_file);
 }
