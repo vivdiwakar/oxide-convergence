@@ -1,3 +1,5 @@
+extern crate num_format;
+
 use crate::date_time;
 
 use chrono::NaiveDate;
@@ -5,6 +7,7 @@ use statrs::statistics::Statistics;
 use statrs::distribution::{ContinuousCDF, Normal};
 use rand::prelude::*;
 use rayon::prelude::*;
+use num_format::{Locale, ToFormattedString};
 
 pub fn run_monte_carlo_simulation(end_date: &String, hist_data: Vec<(NaiveDate, f64)>, sims_per_day: &String) -> Vec<(NaiveDate, f64, f64, f64, f64, f64)> {
     let num_sims: &i64 = &sims_per_day.parse::<i64>().unwrap();
@@ -37,7 +40,8 @@ pub fn run_monte_carlo_simulation(end_date: &String, hist_data: Vec<(NaiveDate, 
         generate_simulation_for_day_num(1, &latest_date, &days_to_sim, &num_sims, &latest_price, 
             &stdev_p_daily_return, &drift);
     
-    println!("\nSimulation complete! {} price points generated in total.", num_sims.clone() as i64 * days_to_sim);
+    println!("    Simulation complete! {} price points generated in total", 
+        (num_sims.clone() as i64 * days_to_sim).to_formatted_string(&Locale::en));
 
     return results;
 }
