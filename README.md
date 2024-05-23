@@ -2,6 +2,10 @@
 
 Monte Carlo simulator of price data written in Rust
 
+**!!! WARNING !!!**
+
+The code is technically correct and works, but no guarantees are made for the correctness of the formulae or the steps in the process; **_USER BEWARE_** - use at your own risk!
+
 ## Building
 
 ```sh
