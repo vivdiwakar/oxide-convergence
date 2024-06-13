@@ -10,6 +10,7 @@ use getopts::{Options, Matches};
 use chrono::NaiveDate;
 use std::process;
 use num_format::{Locale, ToFormattedString};
+use format_num::NumberFormat;
 
 fn usage(program: &str, opts: Options) {
     let message: String = format!("Usage: {} -i input_file.csv -o output_file.csv", program);
@@ -21,6 +22,7 @@ fn main() {
     let full_path: String = args[0].clone();
     let path_elems: Vec<&str> = full_path.split("/").collect();
     let program: &str = path_elems[path_elems.len()-1];
+    let num_fmter: NumberFormat = NumberFormat::new();
 
     let mut opts: Options = Options::new();
     opts.optopt("i", "in_file", "Input file of historical price data, in CSV format.", "hist_data.csv");
@@ -108,18 +110,18 @@ fn main() {
 
     println!("\nStatistics calculated for historical data ...");
     println!("    Total records ingested: {}", &hist_prices.len());
-    println!("    Average Periodic Daily Return : {}", mean);
-    println!("    Minimun Periodic Daily Return: {}", min);
-    println!("    Maximum Periodic Daily Return: {}", max);
-    println!("    Variance: {}", var_p);
-    println!("    Std Deviation: {}", stdev_p);
-    println!("    Drift: {}", drift);
+    println!("    Average Periodic Daily Return : {:.12}", mean);
+    println!("    Minimum Periodic Daily Return: {:.12}", min);
+    println!("    Maximum Periodic Daily Return: {:.12}", max);
+    println!("    Variance on Daily Return: {:.12}", var_p);
+    println!("    Std Deviation on Daily Return: {:.12}", stdev_p);
+    println!("    Daily Return Drift: {:.12}", drift);
     println!("\nStarting price simulation to {} ({} days, {} simulations per day) ...", end_date, &days_to_sim, &num_sims.to_formatted_string(&Locale::en));
     println!("    Latest price date: {}", latest_date);
-    println!("    Latest price (USD): {}", latest_price);
+    println!("    Latest price (USD): {}", num_fmter.format(",.6", latest_price.clone()));
     println!("    Simulation complete! {} price points generated in total", (num_sims.clone() as i64 * days_to_sim).to_formatted_string(&Locale::en));
     println!("\nSimulation Results:");
-    println!("    Expected price on {}: {}", &end_date, &results[&results.len() - 1].1);
+    println!("    Expected price on {}: {}", &end_date, num_fmter.format(",.6", (&results[&results.len() - 1].1).clone()));
     println!("\nGranular Results:");
     println!("    Granular results available in file '{}'", &out_file);
 }
