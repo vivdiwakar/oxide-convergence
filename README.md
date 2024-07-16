@@ -81,3 +81,15 @@ date,mean,min,max,stdev_p,var_p
 2024-05-30,0.1151627213070215,0.0831433783001105,0.15524596900429047,0.007652309325092416,0.00005855783800689635
 2024-05-31,0.11516920215107922,0.08426801571528787,0.16039875077751659,0.007650165380773309,0.000058525030353182424
 ```
+
+### Want to run "everything" as a batched job?
+
+```sh
+./bin/run-daily.sh NUM_SIMS END_DATE
+```
+
+Where token symbol and historical data URLs are listed in `token_list.txt`.
+
+**!!!NOTE!!!**
+
+The batch scripter doesn't allow for passing in date format regexes and only supports `'^(\d{4})-(\d{2})-(\d{2}).*$'` by default - technically hard-coded; this can of course be modified by running the `oxide-convergence` binary directly and passing in the correct regex to suit the date format in the historical data.
