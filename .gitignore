@@ -16,3 +16,6 @@ Cargo.lock
 # temp files
 **/tmp
 
+# Token list and data files
+**/data
+token_list.txt
