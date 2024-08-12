@@ -1,3 +1,0 @@
-BTC https://www.coingecko.com/price_charts/export/1/usd.csv
-HBAR https://www.coingecko.com/price_charts/export/3688/usd.csv
-ZRO https://www.coingecko.com/price_charts/export/28206/usd.csv
