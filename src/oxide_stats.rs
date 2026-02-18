@@ -14,9 +14,9 @@ pub fn get_daily_return_stats(rets_list: &Vec<f64>) -> (f64, f64, f64, f64, f64,
 }
 
 pub fn get_statistical_price(last_hist_price: &f64, stdev_p: &f64, drift: &f64) -> f64 {
-    let mut rng: ThreadRng = rand::thread_rng();
+    let mut rng: ThreadRng = rand::rng();
     let normal: Normal = Normal::new(0.0, 1.0).unwrap();
-    let random_value: f64 = normal.inverse_cdf(rng.gen()) * stdev_p;
+    let random_value: f64 = normal.inverse_cdf(rng.random()) * stdev_p;
     let multiplier: f64 = (drift + &random_value).exp();
     let next_day_price: f64 = last_hist_price * multiplier;
 

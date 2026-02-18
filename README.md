@@ -43,7 +43,7 @@ oxide-convergence -i hist_data.csv -o /tmp/mc_res.csv -e 2028-03-31 -f "^(\d{4})
 Sample run:
 
 ```sh
-$ target/release/oxide-convergence - -i data/coingecko-hbar-usd-genesis-20240522.csv -o /tmp/hbar_price_forecast_20240522-20241231.csv -e 2024-12-31 -f '^(\d{4})-(\d{2})-(\d{2}).*$' -d0 -p1 -s 1000000`
+$ target/release/oxide-convergence - -i data/coingecko-hbar-usd-genesis-20240522.csv -o /tmp/hbar_price_forecast_20240522-20241231.csv -e 2024-12-31 -f '^(\d{4})-(\d{2})-(\d{2}).*$' -d0 -p1 -s 1000000
 
 Statistics calculated for historical data ...
     Total records ingested: 1709
