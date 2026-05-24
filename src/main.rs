@@ -42,67 +42,67 @@ fn main() {
     };
 
     if matches.opt_present("h") {
-        usage(&program, opts);
+        usage(program, opts);
         return;
     };
 
     let in_file: String = if matches.opt_str("i").is_some() {
         matches.opt_str("i").clone().unwrap()
     } else {
-        usage(&program, opts);
+        usage(program, opts);
         return;
     };
 
     let out_file: String = if matches.opt_str("o").is_some() {
         matches.opt_str("o").clone().unwrap()
     } else {
-        usage(&program, opts);
+        usage(program, opts);
         return;
     };
 
     let end_date: String = if matches.opt_str("e").is_some() {
         matches.opt_str("e").clone().unwrap()
     } else {
-        usage(&program, opts);
+        usage(program, opts);
         return;
     };
 
     let date_regex: String = if matches.opt_str("f").is_some() {
         matches.opt_str("f").clone().unwrap()
     } else {
-        usage(&program, opts);
+        usage(program, opts);
         return;
     };
 
     let date_column: String = if matches.opt_str("d").is_some() {
         matches.opt_str("d").clone().unwrap()
     } else {
-        usage(&program, opts);
+        usage(program, opts);
         return;
     };
 
     let price_column: String = if matches.opt_str("p").is_some() {
         matches.opt_str("p").clone().unwrap()
     } else {
-        usage(&program, opts);
+        usage(program, opts);
         return;
     };
 
     let sims_per_day: String = if matches.opt_str("s").is_some() {
         matches.opt_str("s").clone().unwrap()
     } else {
-        usage(&program, opts);
+        usage(program, opts);
         return;
     };
 
     let seed: Option<u64> = matches.opt_str("r").map(|r| r.parse::<u64>().unwrap());
 
-    let effective_seed = seed.unwrap_or_else(|| rand::random::<u64>());
+    let effective_seed = seed.unwrap_or_else(rand::random::<u64>);
     let hist_prices: Vec<(NaiveDate, f64)> = disk_io::ingest_historical_data(in_file, &date_regex, &date_column, &price_column);
     let latest_date: NaiveDate = hist_prices[hist_prices.len()-1].0;
     let target_date: NaiveDate = date_time::get_naive_date_from_string(&end_date);
 
-    if &target_date < &latest_date {
+    if target_date < latest_date {
         println!("Target date falls within available historical data, nothing to forecast; exiting.");
         process::exit(2);
     }
@@ -111,7 +111,7 @@ fn main() {
     let (latest_date, latest_price, days_to_sim, mean, min, max, var_p, stdev_p, drift) = 
         simulator::setup_historical_data(&end_date, &hist_prices);
     let results: Vec<(NaiveDate, f64, f64, f64, f64, f64)> = 
-        simulator::run_simulation(1, &latest_date, &days_to_sim, &num_sims, &latest_price, &stdev_p, &drift, &effective_seed);
+        simulator::run_simulation(1, &latest_date, &days_to_sim, num_sims, &latest_price, &stdev_p, &drift, &effective_seed);
     let _ = disk_io::write_results_to_file(&results, &out_file);
 
     println!("\nStatistics calculated for historical data ...");
@@ -124,10 +124,10 @@ fn main() {
     println!("    Daily Return Drift: {:.12}", drift);
     println!("\nStarting price simulation to {} ({} days, {} simulations per day) ...", end_date, &days_to_sim, &num_sims.to_formatted_string(&Locale::en));
     println!("    Latest price date: {}", latest_date);
-    println!("    Latest price (USD): {}", num_fmter.format(",.6", latest_price.clone()));
-    println!("    Simulation complete! {} price points generated in total", (num_sims.clone() as i64 * days_to_sim).to_formatted_string(&Locale::en));
+    println!("    Latest price (USD): {}", num_fmter.format(",.6", latest_price));
+    println!("    Simulation complete! {} price points generated in total", (*num_sims as i64 * days_to_sim).to_formatted_string(&Locale::en));
     println!("\nSimulation Results:");
-    println!("    Expected price on {}: {}", &end_date, num_fmter.format(",.6", (&results[&results.len() - 1].1).clone()));
+    println!("    Expected price on {}: {}", &end_date, num_fmter.format(",.6", results[&results.len() - 1].1));
     println!("\nGranular Results:");
     println!("    Granular results available in file '{}'", &out_file);
     println!("\nSeed used for simulation: {}\n", effective_seed);

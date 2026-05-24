@@ -5,7 +5,7 @@ use chrono::NaiveDate;
 use rand::SeedableRng;
 use rand::rngs::StdRng;
 
-pub fn setup_historical_data(end_date: &String, hist_data: &Vec<(NaiveDate, f64)>) 
+pub fn setup_historical_data(end_date: &String, hist_data: &[(NaiveDate, f64)]) 
     -> (NaiveDate, f64, i64, f64, f64, f64, f64, f64, f64) 
 {
     let mut periodic_daily_returns: Vec<f64> = Vec::new();
@@ -15,7 +15,7 @@ pub fn setup_historical_data(end_date: &String, hist_data: &Vec<(NaiveDate, f64)
     
     let latest_date: NaiveDate = hist_data[hist_data.len()-1].0;
     let latest_price: f64 = hist_data[hist_data.len()-1].1;
-    let days_to_sim: i64 = date_time::days_between(&end_date, latest_date);
+    let days_to_sim: i64 = date_time::days_between(end_date, latest_date);
     let (mean, min, max, var_p, stdev_p, drift) = 
         oxide_stats::get_daily_return_stats(&periodic_daily_returns);
 
