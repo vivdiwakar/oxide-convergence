@@ -13,7 +13,7 @@ use num_format::{Locale, ToFormattedString};
 use format_num::NumberFormat;
 
 fn usage(program: &str, opts: Options) {
-    let message: String = format!("Usage: {} -i input_file.csv -o output_file.csv", program);
+    let message: String = format!("Usage: {} -i IN_FILE.csv -o OUT_FILE -e END_DATE -f \"DATE_REGEX\" -d DATE_COLUMN_INDEX -p PRICE_COLUMN_INDEX -s INTEGER [-r UNSIGNED_INTEGER]", program);
     println!("{}", opts.usage(&message));
 }
 
