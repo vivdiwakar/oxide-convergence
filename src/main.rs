@@ -110,8 +110,9 @@ fn main() {
     let num_sims: &i64 = &sims_per_day.parse::<i64>().unwrap();
     let (latest_date, latest_price, days_to_sim, mean, min, max, var_p, stdev_p, drift) = 
         simulator::setup_historical_data(&end_date, &hist_prices);
+    let setup_params: (&f64, &f64, &u64) = (&stdev_p, &drift, &effective_seed);
     let results: Vec<(NaiveDate, f64, f64, f64, f64, f64)> = 
-        simulator::run_simulation(1, &latest_date, &days_to_sim, num_sims, &latest_price, &stdev_p, &drift, &effective_seed);
+        simulator::run_simulation(1, &latest_date, &days_to_sim, num_sims, &latest_price, setup_params);
     let _ = disk_io::write_results_to_file(&results, &out_file);
 
     println!("\nStatistics calculated for historical data ...");

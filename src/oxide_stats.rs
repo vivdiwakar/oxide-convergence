@@ -10,7 +10,7 @@ pub fn get_daily_return_stats(rets_list: &Vec<f64>) -> (f64, f64, f64, f64, f64,
     let max: f64 = Statistics::max(rets_list);
     let stdev_p: f64 = Statistics::population_std_dev(rets_list);
     let var_p: f64 = Statistics::population_variance(rets_list);
-    let drift: f64 = &mean - (&var_p / 2.0) as f64;
+    let drift: f64 = mean - (&var_p / 2.0);
 
     (mean, min, max, var_p, stdev_p, drift)
 }
