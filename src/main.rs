@@ -12,6 +12,9 @@ use std::process;
 use num_format::{Locale, ToFormattedString};
 use format_num::NumberFormat;
 
+use rand::SeedableRng;
+use rand::rngs::StdRng;
+
 fn usage(program: &str, opts: Options) {
     let message: String = format!("Usage: {} -i IN_FILE.csv -o OUT_FILE -e END_DATE -f \"DATE_REGEX\" -d DATE_COLUMN_INDEX -p PRICE_COLUMN_INDEX -s INTEGER [-r UNSIGNED_INTEGER]", program);
     println!("{}", opts.usage(&message));
@@ -107,10 +110,12 @@ fn main() {
         process::exit(2);
     }
 
-    let num_sims: &i64 = &sims_per_day.parse::<i64>().unwrap();
     let (latest_date, latest_price, days_to_sim, mean, min, max, var_p, stdev_p, drift) = 
         simulator::setup_historical_data(&end_date, &hist_prices);
-    let setup_params: (&f64, &f64, &u64) = (&stdev_p, &drift, &effective_seed);
+    
+    let num_sims: &i64 = &sims_per_day.parse::<i64>().unwrap();
+    let mut rng: StdRng = StdRng::seed_from_u64(effective_seed);
+    let setup_params: (&f64, &f64, &mut StdRng) = (&stdev_p, &drift, &mut rng);
     let results: Vec<(NaiveDate, f64, f64, f64, f64, f64)> = 
         simulator::run_simulation(1, &latest_date, &days_to_sim, num_sims, &latest_price, setup_params);
     let _ = disk_io::write_results_to_file(&results, &out_file);
