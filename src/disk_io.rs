@@ -9,7 +9,7 @@ use chrono::NaiveDate;
 use csv::{Reader, ReaderBuilder, Writer};
 use regex::{Regex, Captures};
 
-pub fn ingest_historical_data(in_file: String, date_regex: &str, date_column: &String, price_column: &String) -> Vec<(NaiveDate, f64)> {
+pub fn ingest_historical_data(in_file: String, date_regex: &str, date_column: &str, price_column: &str) -> Vec<(NaiveDate, f64)> {
     let date_col: usize = date_column.parse().unwrap();
     let price_col: usize = price_column.parse().unwrap();
     let mut regex_match: bool = false;
@@ -41,17 +41,17 @@ pub fn ingest_historical_data(in_file: String, date_regex: &str, date_column: &S
         };
     }
 
-    if regex_match == false {
+    if !regex_match {
         println!("No matches on regular expresion '{}' so no historical data was parsed.", date_regex);
         println!("Cannot proceed with simulation so exiting.");
         process::exit(1);
     }
 
     prices.sort_by_key(|rec| rec.0);
-    return prices;
+    prices
 }
 
-pub fn write_results_to_file(results: &Vec<(NaiveDate, f64, f64, f64, f64, f64)>, out_file: &String) 
+pub fn write_results_to_file(results: &[(NaiveDate, f64, f64, f64, f64, f64)], out_file: &String) 
     -> Result<(), Box<dyn Error>>
 {
 
@@ -64,7 +64,7 @@ pub fn write_results_to_file(results: &Vec<(NaiveDate, f64, f64, f64, f64, f64)>
         }
     };
 
-    wtr.write_record(&["date", "mean", "min", "max", "stdev_p", "var_p"])?;
+    wtr.write_record(["date", "mean", "min", "max", "stdev_p", "var_p"])?;
     for res in results.iter() {
         let date: String = res.0.to_string();
         let mean: String = res.1.to_string();
@@ -72,7 +72,7 @@ pub fn write_results_to_file(results: &Vec<(NaiveDate, f64, f64, f64, f64, f64)>
         let max: String = res.3.to_string();
         let stdev_p: String = res.4.to_string();
         let var_p : String = res.5.to_string();
-        wtr.write_record(&[&date, &mean, &min, &max, &stdev_p, &var_p])?;
+        wtr.write_record([&date, &mean, &min, &max, &stdev_p, &var_p])?;
     }
     wtr.flush()?;
 

@@ -16,12 +16,12 @@ The compiled binary can be found under `./target/release/`.
 
 ## Source Data
 
-- [Hedera](https://hedera.com/) ([HBAR](https://hedera.com/hbar)): [Coingecko - Hedera USD Historical Data](https://www.coingecko.com/en/coins/hedera/historical_data)
+- [Coingecko - Canton USD Historical Data](https://www.coingecko.com/en/coins/canton/historical_data)
 
 ## Running
 
 ```sh
-oxide-convergence -i IN_FILE.csv -o OUT_FILE -e END_DATE -f "DATE_REGEX" -d DATE_COLUMN_INDEX -p PRICE_COLUMN_INDEX -s INTEGER
+oxide-convergence -i IN_FILE.csv -o OUT_FILE -e END_DATE -f "DATE_REGEX" -d DATE_COLUMN_INDEX -p PRICE_COLUMN_INDEX -s INTEGER [-r UNSIGNED_INTEGER]
 ```
 
 Options:
@@ -33,63 +33,54 @@ Options:
 - _-d_ or _--date_column_index_: Zero-indexed column number containing dates
 - _-p_ or _--price_column_index_: Zero-indexed column number containing prices
 - _-s_ or _--sims_per_day_: Number of simulations to run per day
+- _-r_ or _--seed_: Optional u64 seed for reproducible runs
 
 Example:
 
 ```sh
-oxide-convergence -i hist_data.csv -o /tmp/mc_res.csv -e 2028-03-31 -f "^(\d{4})-(\d{2})-(\d{2}).*$" -d0 -p1 -s 5000
+oxide-convergence -i hist_data.csv -o /tmp/mc_res.csv -e 2028-03-31 -f "^(\d{4})-(\d{2})-(\d{2}).*$" -d0 -p1 -s 5000 -r 
 ```
 
 Sample run:
 
 ```sh
-$ target/release/oxide-convergence - -i data/coingecko-hbar-usd-genesis-20240522.csv -o /tmp/hbar_price_forecast_20240522-20241231.csv -e 2024-12-31 -f '^(\d{4})-(\d{2})-(\d{2}).*$' -d0 -p1 -s 1000000
+$ target/release/oxide-convergence - -i data/coingecko-cc-usd-genesis-20260524.csv -o /tmp/cc_price_forecast_2026-12-31.csv -e 2026-12-31 -f '^(\d{4})-(\d{2})-(\d{2}).*$' -d0 -p1 -s 1000000 -r `date +%s`
 
 Statistics calculated for historical data ...
-    Total records ingested: 1709
-    Average Periodic Daily Return : 0.000003912096542561562
-    Minimun Periodic Daily Return: -0.5910989317376647
-    Maximum Periodic Daily Return: 0.7162084731433174
-    Variance: 0.004403904535001393
-    Std Deviation: 0.06636192082061364
-    Drift: -0.002198040170958135
+    Total records ingested: 196
+    Average Periodic Daily Return : 0.001586367388
+    Minimum Periodic Daily Return: -0.182798536624
+    Maximum Periodic Daily Return: 0.218216925375
+    Variance on Daily Return: 0.003268429445
+    Std Deviation on Daily Return: 0.057170179686
+    Daily Return Drift: -0.000047847335
 
-Starting price simulation to 2024-12-31 (223 days, 1,000,000 simulations per day) ...
-    Latest price date: 2024-05-22
-    Latest price (USD): 0.11517014118269715
-    Simulation complete! 223,000,000 price points generated in total
+Starting price simulation to 2026-12-31 (221 days, 1,000,000 simulations per day) ...
+    Latest price date: 2026-05-24
+    Latest price (USD): 0.161025
+    Simulation complete! 221,000,000 price points generated in total
 
 Simulation Results:
-    Expected price on 2024-12-31: 0.11529989849831523
+    Expected price on 2026-12-31: 0.231764
 
 Granular Results:
-    Granular results available in file '/tmp/hbar_price_forecast_20240522-20241231.csv'
+    Granular results available in file '/tmp/cc_price_forecast_2026-12-31.csv'
+
+Seed used for simulation: 1779643359
 ```
 
 Granular results:
 
 ```sh
-$ head /tmp/hbar_price_forecast_20240522-20241231.csv 
+$ head /tmp/cc_price_forecast_2026-12-31.csv
 date,mean,min,max,stdev_p,var_p
-2024-05-23,0.11516323570167566,0.0839082982922755,0.15831909226205793,0.007648172508418186,0.00005849454271852373
-2024-05-24,0.1151689583128451,0.08168939927851085,0.15930332503768105,0.007655587278523286,0.00005860801657908758
-2024-05-25,0.11516601277701675,0.08293300586227746,0.15517392805755098,0.007650689241921117,0.00005853304587644752
-2024-05-26,0.11516837737873861,0.08292782648554664,0.1620598950566647,0.007655203630621842,0.000058602142626285835
-2024-05-27,0.11518010934773278,0.08108850378106763,0.15998029988835888,0.007656924789108562,0.000058628497226065194
-2024-05-28,0.11516897725662929,0.0845897365601167,0.15959008003503147,0.007652190895622956,0.00005855602550305485
-2024-05-29,0.11515522316191233,0.08388016062229756,0.15739070627507112,0.007663907589648068,0.00005873547954266526
-2024-05-30,0.1151627213070215,0.0831433783001105,0.15524596900429047,0.007652309325092416,0.00005855783800689635
-2024-05-31,0.11516920215107922,0.08426801571528787,0.16039875077751659,0.007650165380773309,0.000058525030353182424
+2026-05-25,0.1612907849992635,0.12068439291589264,0.21513954115026324,0.009226301922335223,0.00008512464716208664
+2026-05-26,0.1615567755950568,0.12088341800945121,0.21549433572038978,0.009241517357893343,0.00008540564307624396
+2026-05-27,0.16182320484577606,0.12108277132264893,0.21584971539535763,0.009256757885788669,0.00008568756655611071
+2026-05-28,0.16209007347481663,0.1212824533967661,0.2162056811400869,0.009272023547402303,0.00008597042066358279
+2026-05-29,0.16235738220677895,0.12148246477396951,0.2165622339210779,0.00928731438418209,0.00008625420847063555
+2026-05-30,0.16262513176745624,0.12168280599732909,0.21691937470644107,0.009302630437646696,0.00008653893305943075
+2026-05-31,0.16289332288382724,0.12188347761080873,0.21727710446588047,0.009317971749381282,0.00008682459752226769
+2026-06-01,0.1631619562840834,0.12208448015926085,0.2176354241706841,0.009333338361039549,0.00008711120496165241
+2026-06-02,0.16343103269761292,0.12228581418844679,0.21799433479376013,0.009348730314345296,0.0000873987584903587
 ```
-
-### Want to run "everything" as a batched job?
-
-```sh
-./bin/run-daily.sh NUM_SIMS END_DATE
-```
-
-Where token symbol and historical data URLs are listed in `token_list.txt`.
-
-**!!!NOTE!!!**
-
-The batch scripter doesn't allow for passing in date format regexes and only supports `'^(\d{4})-(\d{2})-(\d{2}).*$'` by default - technically hard-coded; this can of course be modified by running the `oxide-convergence` binary directly and passing in the correct regex to suit the date format in the historical data.
