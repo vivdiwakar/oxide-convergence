@@ -33,6 +33,9 @@ fn main() {
     opts.optopt("p", "price_column_index", "Zero-indexed column number containing prices.", "1");
     opts.optopt("s", "sims_per_day", "Number of simulations to run per day.", "5000");
     opts.optflag("h", "help", "Print this help menu.");
+    opts.optopt("r", "seed", "Optional u64 seed for reproducible runs.", "42");
+
+
     let matches: Matches = match opts.parse(&args[1..]) {
         Ok(m) => { m }
         Err(f) => { panic!("{}", f.to_string()) }
@@ -92,6 +95,9 @@ fn main() {
         return;
     };
 
+    let seed: Option<u64> = matches.opt_str("r").map(|r| r.parse::<u64>().unwrap());
+
+    let effective_seed = seed.unwrap_or_else(|| rand::random::<u64>());
     let hist_prices: Vec<(NaiveDate, f64)> = disk_io::ingest_historical_data(in_file, &date_regex, &date_column, &price_column);
     let latest_date: NaiveDate = hist_prices[hist_prices.len()-1].0;
     let target_date: NaiveDate = date_time::get_naive_date_from_string(&end_date);
@@ -105,7 +111,7 @@ fn main() {
     let (latest_date, latest_price, days_to_sim, mean, min, max, var_p, stdev_p, drift) = 
         simulator::setup_historical_data(&end_date, &hist_prices);
     let results: Vec<(NaiveDate, f64, f64, f64, f64, f64)> = 
-        simulator::run_simulation(1, &latest_date, &days_to_sim, &num_sims, &latest_price, &stdev_p, &drift);
+        simulator::run_simulation(1, &latest_date, &days_to_sim, &num_sims, &latest_price, &stdev_p, &drift, &effective_seed);
     let _ = disk_io::write_results_to_file(&results, &out_file);
 
     println!("\nStatistics calculated for historical data ...");
@@ -124,4 +130,5 @@ fn main() {
     println!("    Expected price on {}: {}", &end_date, num_fmter.format(",.6", (&results[&results.len() - 1].1).clone()));
     println!("\nGranular Results:");
     println!("    Granular results available in file '{}'", &out_file);
+    println!("\nSeed used for simulation: {}\n", effective_seed);
 }
