@@ -113,11 +113,10 @@ fn main() {
     let (latest_date, latest_price, days_to_sim, mean, min, max, var_p, stdev_p, drift) = 
         simulator::setup_historical_data(&end_date, &hist_prices);
     
-    let num_sims: &i64 = &sims_per_day.parse::<i64>().unwrap();
-    let mut rng: StdRng = StdRng::seed_from_u64(effective_seed);
-    let setup_params: (&f64, &f64, &mut StdRng) = (&stdev_p, &drift, &mut rng);
-    let results: Vec<(NaiveDate, f64, f64, f64, f64, f64)> = 
-        simulator::run_simulation(1, &latest_date, &days_to_sim, num_sims, &latest_price, setup_params);
+    let num_sims: i64 = sims_per_day.parse::<i64>().unwrap();
+    let mut master_rng: StdRng = StdRng::seed_from_u64(effective_seed);
+    let results: Vec<(NaiveDate, f64, f64, f64, f64, f64)> =
+        simulator::run_simulation(&latest_date, days_to_sim, num_sims, latest_price, stdev_p, drift, &mut master_rng);
     let _ = disk_io::write_results_to_file(&results, &out_file);
 
     println!("\nStatistics calculated for historical data ...");
@@ -131,7 +130,7 @@ fn main() {
     println!("\nStarting price simulation to {} ({} days, {} simulations per day) ...", end_date, &days_to_sim, &num_sims.to_formatted_string(&Locale::en));
     println!("    Latest price date: {}", latest_date);
     println!("    Latest price (USD): {}", num_fmter.format(",.6", latest_price));
-    println!("    Simulation complete! {} price points generated in total", (*num_sims as i64 * days_to_sim).to_formatted_string(&Locale::en));
+    println!("    Simulation complete! {} price points generated in total", (num_sims as i64 * days_to_sim).to_formatted_string(&Locale::en));
     println!("\nSimulation Results:");
     println!("    Expected price on {}: {}", &end_date, num_fmter.format(",.6", results[&results.len() - 1].1));
     println!("\nGranular Results:");
