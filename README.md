@@ -38,7 +38,7 @@ Options:
 Example:
 
 ```sh
-oxide-convergence -i hist_data.csv -o /tmp/mc_res.csv -e 2028-03-31 -f "^(\d{4})-(\d{2})-(\d{2}).*$" -d0 -p1 -s 5000 -r 
+oxide-convergence -i hist_data.csv -o /tmp/mc_res.csv -e 2028-03-31 -f "^(\d{4})-(\d{2})-(\d{2}).*$" -d0 -p1 -s 5000 -r 1779650345
 ```
 
 Sample run:
