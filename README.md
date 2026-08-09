@@ -2,6 +2,12 @@
 
 Monte Carlo simulator of price data written in Rust
 
+**!!! NOTICE !!!**
+
+This codebase works from a theoretical/student exercise perspective, but not particularly suitable for crypto modelling as it does not factor in volatility properly, and does not handle fat tals properly either.
+
+Also, from a software engineering perspective, it is a bit of a dog's breakfast!
+
 **!!! WARNING !!!**
 
 The code is technically correct and works, but no guarantees are made for the correctness of the formulae or the steps in the process; **_USER BEWARE_** - use at your own risk!
